@@ -11,11 +11,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {createIssueSchema} from '@/app/validationSchema';
 import { z } from 'zod';
 import ErrorMessage from '@/app/components/ErrorMessage';
+import Spinner from '@/app/components/Spinner';
 
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 const NewIssuePage = () => {
   const [errorMessages, setErrorMessages] = React.useState<string|null>(null);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const { register, control, handleSubmit, formState: { errors } } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema)
   });
@@ -24,11 +26,14 @@ const NewIssuePage = () => {
   const handleCreateIssue = async (data: IssueForm) => {
 
     try {
+      setLoading(true);
       const response = await axios.post('/api/issues', data);
       if (response.status === 201) {
+        setLoading(false);
         router.push('/issues');
       }
     }catch (error) {
+      setLoading(false);
       setErrorMessages('An error occurred while creating the issue.');
     }
   };
@@ -56,7 +61,7 @@ const NewIssuePage = () => {
           )}
         />
         {<ErrorMessage>{errors.description?.message}</ErrorMessage>}
-        <Button>Submit Issue</Button>
+        <Button disabled={loading}>Submit Issue {loading && <Spinner/>} </Button>
       </form>
     </div>
   );
