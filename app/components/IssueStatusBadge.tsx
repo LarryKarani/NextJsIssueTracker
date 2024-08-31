@@ -1,5 +1,4 @@
 import { Status } from "@prisma/client";
-import React from "react";
 import { Badge } from "@radix-ui/themes";
 
 interface IssueStatusBadgeProps {
