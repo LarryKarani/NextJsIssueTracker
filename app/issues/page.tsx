@@ -2,7 +2,7 @@ import { IssueStatusBadge, Link } from "@/app/components";
 import IssueActions from "@/app/issues/IssueActions";
 import prisma from "@/prisma/client";
 import { Table } from "@radix-ui/themes";
-import { constants } from "buffer";
+
 
 
 const IssuesPage = async () => {
