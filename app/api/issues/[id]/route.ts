@@ -1,41 +1,44 @@
-import { NextRequest, NextResponse } from "next/server";
 import { issueSchema } from "@/app/validationSchema";
 import prisma from "@/prisma/client";
-import { error } from "console";
- export async function PATCH(
-  request: NextRequest, 
-  {params}: {params: {id: string}}) {
+import { NextRequest, NextResponse } from "next/server";
 
-    const body = await request.json();
-    const validation = issueSchema.safeParse(body);
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }) {
 
-    if (!validation.success) {
-      return NextResponse.json(validation.error.format(), {
-        status: 400,
-        headers: { "Content-Type": "application/json" },
-      });
-    }
+  const body = await request.json();
+  const validation = issueSchema.safeParse(body);
 
-    const issue = await prisma.issue.findUnique({
-      where: {id: parseInt(params.id)},
+  if (!validation.success) {
+    return NextResponse.json(validation.error.format(), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
     });
+  }
 
-    if (!issue) {
-      return NextResponse.json({error: "Issue not found"}, { status: 404 });
-    }
+  const issue = await prisma.issue.findUnique({
+    where: { id: parseInt(params.id) },
+  });
 
-    const updatedIssue = await prisma.issue.update({
-      where: {id: parseInt(params.id)},
-      data: body,
-    });
+  if (!issue) {
+    return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+  }
 
-    return NextResponse.json(updatedIssue, {status: 200});
+  const updatedIssue = await prisma.issue.update({
+    where: { id: parseInt(params.id) },
+    data: body,
+  });
 
- }
+  return NextResponse.json(updatedIssue, { status: 200 });
+
+}
 
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }) {
+
+
+
 
   const issue = await prisma.issue.findUnique({
     where: { id: parseInt(params.id) },
@@ -51,4 +54,5 @@ export async function DELETE(
 
   return NextResponse.json({ message: "Issue deleted" }, { status: 200 });
 
-  }
+}
+
